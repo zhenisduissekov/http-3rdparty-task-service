@@ -7,6 +7,11 @@ import (
 
 var validate = validator.New()
 
+const (
+	ItemsForToValidateMsg    = "items to validate: %+v"
+	CouldNotValidateItemsMsg = "could not validate items"
+)
+
 type ErrorResponse struct {
 	FailedField   string
 	Tag           string
@@ -17,10 +22,10 @@ type ErrorResponse struct {
 func Validate(items interface{}) (errors []*ErrorResponse) {
 	err := validate.Struct(items)
 	if err != nil {
-		log.Err(err).Msgf("could not validate items %+v", items)
+		log.Err(err).Msgf(ItemsForToValidateMsg, items)
 		for _, err := range err.(validator.ValidationErrors) {
 			if err != nil {
-				log.Err(err).Msg("could not validate items")
+				log.Err(err).Msg(CouldNotValidateItemsMsg)
 			}
 			var element ErrorResponse
 			element.FailedField = err.StructNamespace()

@@ -7,31 +7,8 @@ import (
 "github.com/zhenisduissekov/http-3rdparty-task-service/internal/validate"
 )
 
-const (
-	StatusSuccess    = "success"
-	StatusError      = "error"
-	BadRequestErrMsg = "please check your request"
-	ServerErrMsg     = "server error, please try again later"
-)
-
-type AssignTaskReq struct {
-	Method  string            `json:"method" validate:"required,min=3,max=6,alphanum,uppercase" example:"GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE"`
-	Url     string            `json:"url" validate:"required" example:"http://google.com"`
-	Headers map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
-	Payload []byte            `json:"payload" validate:"omitempty" example:"{\"name\":\"John\"}"`
-}
-
-type response struct {
-	Status  string      `json:"status"`
-	Message string      `json:"message"`
-	Results interface{} `json:"result"`
-}
-
-type AssignTaskResp struct {
-	Id string `json:"id"`
-}
-
 // AssignTask godoc
+//
 //	@Summary		Назначить задачу
 //	@Description	назначение задачи.
 //	@Tags			task
@@ -42,45 +19,42 @@ type AssignTaskResp struct {
 //	@Failure		500		string		"ошибка сервера"
 //	@Router			/api/v1/task [get]
 func (h *Handler) AssignTask(f *fiber.Ctx) error {
-	var items AssignTaskReq
+	var items service.AssignTaskReq
 
 	err := f.BodyParser(&items)
 	if err != nil {
-		log.Err(err).Msg("could not parse query")
+		log.Err(err).Msg(ParseErrMsg)
 		return f.Status(fiber.StatusBadRequest).JSON(&response{
 			Status:  StatusError,
 			Message: BadRequestErrMsg,
-			Results: err.Error(),
+			Results: err.Error(), //NOTE 1: would replace this with a template, if it was a real project, if there is logging then it would be useful to log the error
 		})
 	}
 
 	error := validate.Validate(items)
 	if error != nil {
-		log.Err(err).Msg("input parameters validation failed")
+		log.Err(err).Msg(InputParamsValidErrMsg)
 		return f.Status(fiber.StatusBadRequest).JSON(&response{
 			Status:  StatusError,
 			Message: BadRequestErrMsg,
-			Results: error,
+			Results: error, //NOTE: would replace this with a template, if it was a real project
 		})
-
 	}
-	
-	srv := service.New()
-	
-	id, err := srv.AssignTask(items.Url, items.Method, items.Headers, items.Payload)
+
+	id, err := h.service.AssignTask(items)
 	if err != nil {
-		log.Err(err).Msgf("could not get release")
+		log.Err(err).Msgf(TaskAssignErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{
 			Status:  StatusError,
 			Message: ServerErrMsg,
-			Results: err.Error(),
+			Results: err.Error(), //NOTE: would replace this with a template, if it was a real project
 		})
 	}
 
 	return f.Status(fiber.StatusOK).JSON(&response{
 		Status:  StatusSuccess,
-		Message: "task assigned",
-		Results: AssignTaskResp{
+		Message: TaskAssignedMsg,
+		Results: assignTaskResp{
 			Id: id,
 		},
 	})

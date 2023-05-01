@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
@@ -12,42 +13,15 @@ type AuthConf struct {
 	Password string
 }
 
-type DBConf struct {
-	Host     string
-	Port     string
-	Db       string
-	Username string
-	Password string
-}
-
-type Connection struct {
-	Host     string
-	Port     string
-	Db       string
-	Username string
-	Password string
-}
-
-type GoogleConf struct {
-	Url string
-}
-
-type BingConf struct {
-	Url string
-}
-
-type ChatGPTConf struct {
-	Url   string
-	Token string
+type CacheConf struct {
+	DefaultExpiration time.Duration
+	CleanupInterval   time.Duration
 }
 
 type Conf struct {
 	ServiceName string
 	Auth        AuthConf
-	Google      GoogleConf
-	ChatGPT     ChatGPTConf
-	Bing        BingConf
-	Connection  Connection
+	Cache       CacheConf
 	LogLevel    string
 }
 
@@ -62,22 +36,34 @@ func New() *Conf {
 			Username: os.Getenv("USER_NAME_API"),
 			Password: os.Getenv("PASSWORD_API"),
 		},
-		Google: GoogleConf{
-			Url: os.Getenv("GOOGLE_API_URL"),
-		},
-		ChatGPT: ChatGPTConf{
-			Url: os.Getenv("CHAT_GPT_URL"),
-		},
-		Bing: BingConf{
-			Url: os.Getenv("BING_API_URL"),
-		},
-		Connection: Connection{
-			Host:     os.Getenv("POSTGRE_HOST"),
-			Port:     os.Getenv("POSTGRE_PORT"),
-			Db:       os.Getenv("POSTGRE_DB"),
-			Username: os.Getenv("POSTGRE_USERNAME"),
-			Password: os.Getenv("POSTGRE_PASSWORD"),
+		Cache: CacheConf{
+			DefaultExpiration: getEnvDuration("CACHE_DEFAULT_EXPIRATION", "60s"),
+			CleanupInterval:   getEnvDuration("CACHE_CLEANUP_INTERVAL", "120s"),
 		},
 		LogLevel: os.Getenv("LOG_LEVEL"),
 	}
+}
+
+func getEnv(key string, defaultValue string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	return value
+}
+
+func getEnvDuration(key string, defaultValue string) time.Duration {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		dur, err := time.ParseDuration(defaultValue)
+		if err != nil {
+			log.Err(err).Msg("error parsing duration")
+		}
+		return dur
+	}
+	dur, err := time.ParseDuration(value)
+	if err != nil {
+		log.Err(err).Msg("error parsing duration")
+	}
+	return dur
 }

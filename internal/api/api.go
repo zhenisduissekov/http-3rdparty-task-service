@@ -17,6 +17,7 @@ const (
 	reqLogFormat   = "[${time}] ${status} - ${latency} ${method} ${path} ${ip} ${url} in ${bytesReceived} bytes/ out ${bytesSent} bytes\n"
 	prometheusPath = "/metrics"
 	healthPath     = "/health"
+	timeZone       = "Local"
 )
 
 func New(h *handler.Handler, conf *config.Conf) *fiber.App {
@@ -27,8 +28,6 @@ func New(h *handler.Handler, conf *config.Conf) *fiber.App {
 		AllowMethods: "GET,POST",
 		AllowHeaders: "*",
 	}))
-
-	app.Static("/", "./")
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 
@@ -41,39 +40,28 @@ func New(h *handler.Handler, conf *config.Conf) *fiber.App {
 			"status": "success",
 		})
 	})
-	//app.Use(basicauth.New(basicauth.Config{
+	
+	//app.Use(basicauth.New(basicauth.Config{ //todo: basic auth needs to be uncommented in production
 	//	Users: map[string]string{
 	//		conf.Auth.Username: conf.Auth.Password,
 	//	},
 	//	Realm: "Forbidden",
 	//}))
+	
 	app.Use(logger.New(logger.Config{
 		Format:       reqLogFormat,
 		TimeFormat:   reqTimeFormat,
-		TimeZone:     "Local",
+		TimeZone:     timeZone,
 		TimeInterval: 0,
 		Output:       nil,
 	}))
-	app.Post("/api/v1/task", h.AssignTask)   // assign a task
-	app.Get("/api/v1/task/:id", h.CheckTask) // check task status
-	app.Get("/dummy", somethiung)
-	return app
-}
+	
+	api := app.Group("/api/v1")
+	{
+		api.Post("/task", h.AssignTask)   // add a task to the queue
+    	api.Get("/task/:id", h.CheckTask) // get the status of a task by using its id  [pending/in_process/done/new/failed]
+    	api.Get("/task", h.GetAllTasks)   // get all tasks -- for debugging purposes only	
+	}
 
-// ShowAccount godoc
-//	@Summary		Show an account
-//	@Description	get string by ID
-//	@Tags			accounts
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path		int	true	"Account ID"
-//	@Success		200	{object}	string
-//	@Failure		400	{object}	string
-//	@Failure		404	{object}	string
-//	@Failure		500	{object}	string
-//	@Router			/accounts/{id} [get]
-func somethiung(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"status": "success",
-	})
+	return app
 }
