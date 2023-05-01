@@ -12,6 +12,8 @@ const (
 	notFoundErrMsg            = "not found"
 	statusNew                 = "new"
 	statusError               = "error"
+	statusInProcess           = "in_process"
+	statusDone                = "done"
 	cacheLimit                = 1000
 	cacheLimitReachedErrMsg   = "cache limit reached, please try again"
 	taskReceivedMsg           = "task received"
@@ -42,13 +44,4 @@ type AssignTaskResp struct {
 	Headers        map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
 	Length         int               `json:"length" example:"100"`
 	Body           string            `json:"body" example:"{\"name\":\"John\"}"`
-}
-
-type response struct {
-	id             string
-	status         string
-	httpStatusCode int
-	headers        map[string]string
-	length         int
-	body           []byte //optional
 }

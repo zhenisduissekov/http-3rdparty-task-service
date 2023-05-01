@@ -43,8 +43,9 @@ func (s *Service) processNextTask(id string) {
 	
 	response := AssignTaskResp{
 		Id:    id,
-		Body:  string(body),
-		Status: resp.Status,
+		//Body:  string(body), //NOTE: optional, makes response too big to read
+		Status: statusDone,
+		HttpStatusCode: resp.StatusCode,
 		Length: len(body),
 		Headers: getRespHeaders(resp),
 	}

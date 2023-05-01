@@ -11,7 +11,7 @@ const (
 	BadRequestErrMsg = "please check your request"
 	ServerErrMsg     = "server error, please try again later"
 	TaskAssignedMsg  = "task assigned"
-	TaskCheckedMsg  = "task checked"
+	TaskCheckedMsg  	= "task checked"
 
 	ParseErrMsg            = "could not parse query/body"
 	InputParamsValidErrMsg = "input parameters validation error"
@@ -31,7 +31,6 @@ func New(service *service.Service, log *logger.Logger) *Handler {
 	}
 }
 
-
 type response struct {
 	Status  string      `json:"status"`
 	Message string      `json:"message"`
@@ -43,7 +42,7 @@ type assignTaskResp struct {
 }
 
 type TaskStatusReq struct {
-	Id string `json:"id"`
+	Id string `json:"id" required:"true"`
 }
 
 type TaskStatusResp struct {
