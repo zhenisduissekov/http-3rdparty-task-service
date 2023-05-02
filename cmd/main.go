@@ -40,7 +40,7 @@ func main() {
 	srv := service.New(repo, cnf)
 	h := handler.New(srv)
 	app := router(h, cnf)
-	
+
 	go func() {
 		srv.TaskQueue()
 	}()
