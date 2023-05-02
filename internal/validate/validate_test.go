@@ -1,52 +1,65 @@
 package validate
 
 import (
-	"fmt"
-"testing"
+	"testing"
 
-	"github.com/stretchr/testify/assert"
+		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
 )
 
-func Test_Validate(t *testing.T) {
-	sample := struct {
-		FailedField   string `validate:"required" min="7" max="10"`
-		Tag           string `validate:"required" len="5"`
-		Value         string `validate:"required" uppercase"`
-		ReceivedValue string `validate:"required" numeric"`
+func Test_validate(t *testing.T) {
+	tests := []struct {
+		name string
+		desc string
+		args service.AssignTaskReq
+		want ErrorResponse
 	}{
-		FailedField:   "test",
-		Tag:           "test",
-		Value:         "test",
-		ReceivedValue: "test",
+		{
+			name: "test1",
+			desc: "validate method len too short",
+			args: service.AssignTaskReq{
+				Method: "GE",
+				Url:    "http://google.com",
+			},
+			want: ErrorResponse{
+				Tag:           "min",
+				Value:         "3",
+				ReceivedValue: "GE",
+				FailedField:   "AssignTaskReq.Method",
+			},
+		},
+		{
+			name: "test2",
+			desc: "validate method url missing",
+			args: service.AssignTaskReq{
+				Method: "GET",
+			},
+			want: ErrorResponse{
+				Tag:           "required",
+				Value:         "",
+				ReceivedValue: "",
+				FailedField:   "AssignTaskReq.Url",
+			},
+		},		
 	}
 
-	err := Validate(sample)
-	want := ErrorResponse{
-		FailedField: "test",
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := Validate(tt.args)
+			if !sliceContains(err, tt.want) {
+				for _, e := range err {
+					t.Errorf("received = %v, but want %v", e, tt.want)
+				}
+			}
+		})
 	}
-	assert.Equal(t, err, want)
 
 }
 
-
-func Test_validate_MethoTooShort(t *testing.T) {
-	items := struct {
-    	Method  string            `json:"method" validate:"required,min=3,max=6,alphanum,uppercase" example:"GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE"`
-    	Url     string            `json:"url" validate:"required" example:"http://google.com"`
-    	Headers map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
-    	ReqBody []byte            `json:"body" validate:"omitempty" example:"{\"name\":\"John\"}"`
-    	Status  string            `json:"status" validate:"omitempty" example:"done/in_process/error/new"`
-    }{
-		Method: "GE",
-		Url: "http://google.com",
-    }
-	
-	err := Validate(items)
-	want := ErrorResponse{
-		FailedField: "Method",
+func sliceContains(slice []*ErrorResponse, item ErrorResponse) bool {
+	for _, s := range slice {
+		if *s == item {
+			return true
+		}
 	}
-	assert.Equal(t, want, err)
-	for i, v := rangeerr {
-		fmt.Println("here", i, v)
-	}
+	return false
 }

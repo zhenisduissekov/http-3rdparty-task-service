@@ -14,7 +14,7 @@ func (h *Handler) GetAllTasks(f *fiber.Ctx) error {
 			Results: err.Error(), //NOTE: would replace this with a template, if it was a real project
 		})
 	}
-
+	h.log.Warn().Msg("here")
 	return f.Status(fiber.StatusOK).JSON(&response{
 		Status:  StatusSuccess, //todo: fill this
 		Message: TaskCheckedMsg,

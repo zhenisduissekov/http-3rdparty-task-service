@@ -36,21 +36,35 @@ const docTemplate = `{
                     "200": {
                         "description": "успешный ответ",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handler.response"
                         }
                     },
                     "400": {
                         "description": "ошибка запроса",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handler.response"
                         }
                     },
                     "500": {
                         "description": "ошибка сервера",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handler.response"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "result": {},
+                "status": {
+                    "type": "string"
                 }
             }
         }

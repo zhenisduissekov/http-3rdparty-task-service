@@ -30,7 +30,7 @@ const (
 var queue = make(chan string, queueSize)
 
 type AssignTaskReq struct {
-	Method  string            `json:"method" validate:"required,min=3,max=6,alphanum,uppercase" example:"GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE"`
+	Method  string            `json:"method" validate:"required,min=3,max=6,alpha,uppercase" example:"GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE"`
 	Url     string            `json:"url" validate:"required" example:"http://google.com"`
 	Headers map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
 	ReqBody []byte            `json:"body" validate:"omitempty" example:"{\"name\":\"John\"}"`

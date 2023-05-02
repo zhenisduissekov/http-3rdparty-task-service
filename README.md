@@ -11,32 +11,37 @@ its execution starts in the background.
 ### Instructions
 * run program
 ```
-    go run ./cmd/main.go
+    go run main.go
 ```
 if needed to specify port
 ```
-    go run ./cmd/main.go --port :4000
+    go run main.go --port :4000
 ```
+if the project was more complicated, then I would use a Makefile to run the project and move main.go to ./cmd folder
+
+* run tests
+```
+    go test ./... -v
+```
+
 * swagger docs
 ```
     http://localhost:3000/swagger/index.html
 ```
 initializing swagger docs
 ```
-    swag init -g cmd/main.go
+    swag init -g main.go
 ```
 
 ### Notes
 
-* added /api/v1 for endpoints for future versioning
+* grouped endpoints with `/api/v1` for future version control
 
 ### Used libraries
 
-I chose fiber v2 for its speed and easy implementation, if I needed to use as less dependencies as possible then I would use net/http or chi.
+* I chose fiber v2 for its speed and easy implementation, also it has very good test implementation, if I needed to use as fewer dependencies as possible, then I would use net/http or chi.
 However, net/http would require me to write more code.
 
-Uber fx lets me write less code for dependency injection.
+* Uber fx lets me write less code for dependency injection.
 
-PgxPool is very good with connection pooling and it is very fast, however a bit tricky for mocking.
-
-Zerolog is a very fast logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.
+* Zerolog is a very fast logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.

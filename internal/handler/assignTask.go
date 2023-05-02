@@ -14,9 +14,9 @@ import (
 //	@Tags			task
 //	@Accept			*/*
 //	@Produce		json
-//	@Success		200		string		"успешный ответ"
-//	@Failure		400		string		"ошибка запроса"
-//	@Failure		500		string		"ошибка сервера"
+//	@Success		200		object response		"успешный ответ"
+//	@Failure		400		object response		"ошибка запроса"
+//	@Failure		500		object response		"ошибка сервера"
 //	@Router			/api/v1/task [get]
 func (h *Handler) AssignTask(f *fiber.Ctx) error {
 	var items service.AssignTaskReq

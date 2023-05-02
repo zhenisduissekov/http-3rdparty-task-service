@@ -1,4 +1,13 @@
 basePath: /
+definitions:
+  handler.response:
+    properties:
+      message:
+        type: string
+      result: {}
+      status:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -17,15 +26,15 @@ paths:
         "200":
           description: успешный ответ
           schema:
-            type: string
+            $ref: '#/definitions/handler.response'
         "400":
           description: ошибка запроса
           schema:
-            type: string
+            $ref: '#/definitions/handler.response'
         "500":
           description: ошибка сервера
           schema:
-            type: string
+            $ref: '#/definitions/handler.response'
       summary: Назначить задачу
       tags:
       - task
