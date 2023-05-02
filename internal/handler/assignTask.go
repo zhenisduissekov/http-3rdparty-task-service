@@ -3,24 +3,27 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/validate"
 )
 
 // AssignTask godoc
+// @Security BasicAuth
 //
 //	@Summary		Назначить задачу
 //	@Description	назначение задачи.
 //	@Tags			task
-//	@Accept			*/*
-//	@Produce		json
+//
+// @Accept  json
+// @Produce  json
+// @Param	input	body	AssignTaskReq		true "тело запроса"
+//
 //	@Success		200		object response		"успешный ответ"
 //	@Failure		400		object response		"ошибка запроса"
+//	@Failure		406		object response		"ошибка валидации"
 //	@Failure		500		object response		"ошибка сервера"
-//	@Router			/api/v1/task [get]
+//	@Router			/api/v1/task [post]
 func (h *Handler) AssignTask(f *fiber.Ctx) error {
-	var items service.AssignTaskReq
-
+	var items AssignTaskReq
 	err := f.BodyParser(&items)
 	if err != nil {
 		log.Err(err).Msg(ParseErrMsg)
@@ -34,14 +37,14 @@ func (h *Handler) AssignTask(f *fiber.Ctx) error {
 	error := validate.Validate(items)
 	if error != nil {
 		log.Err(err).Msg(InputParamsValidErrMsg)
-		return f.Status(fiber.StatusBadRequest).JSON(&response{
+		return f.Status(fiber.StatusNotAcceptable).JSON(&response{
 			Status:  StatusError,
 			Message: BadRequestErrMsg,
 			Results: error, //NOTE: would replace this with a template, if it was a real project
 		})
 	}
 
-	id, err := h.service.AssignTask(items)
+	id, err := h.service.AssignTask(items.convert2service())
 	if err != nil {
 		log.Err(err).Msgf(TaskAssignErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{
@@ -54,7 +57,7 @@ func (h *Handler) AssignTask(f *fiber.Ctx) error {
 	return f.Status(fiber.StatusOK).JSON(&response{
 		Status:  StatusSuccess,
 		Message: TaskAssignedMsg,
-		Results: assignTaskResp{
+		Results: AssignTaskResp{
 			Id: id,
 		},
 	})

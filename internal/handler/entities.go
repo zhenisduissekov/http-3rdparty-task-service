@@ -1,15 +1,17 @@
 package handler
 
 import (
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/logger"
+	"github.com/google/uuid"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
 )
 
 const (
 	StatusSuccess          = "success"
 	StatusError            = "error"
+	statusNew              = "new"
 	BadRequestErrMsg       = "please check your request"
-	ServerErrMsg           = "server error, please try again later"
+	ServerErrMsg           = "server error, please check your request or try again"
 	TaskAssignedMsg        = "task assigned"
 	TaskCheckedMsg         = "task checked"
 	NoIdErrMsg             = "no id provided"
@@ -20,14 +22,12 @@ const (
 )
 
 type Handler struct {
-	service *service.Service
-	log     *logger.Logger
+	service *service.NewService
 }
 
-func New(service *service.Service, log *logger.Logger) *Handler {
+func New(service *service.NewService) *Handler {
 	return &Handler{
 		service: service,
-		log:     log,
 	}
 }
 
@@ -37,7 +37,7 @@ type response struct {
 	Results interface{} `json:"result"`
 }
 
-type assignTaskResp struct {
+type AssignTaskResp struct {
 	Id string `json:"id"`
 }
 
@@ -49,4 +49,32 @@ type TaskStatusResp struct {
 	Method  string            `json:"method"`
 	Url     string            `json:"url"`
 	Headers map[string]string `json:"headers"`
+}
+
+type AssignTaskReq struct {
+	Method  string            `json:"method" validate:"required,min=3,max=6,alpha,uppercase" example:"GET"`
+	Url     string            `json:"url" validate:"required" example:"http://google.com"`
+	Headers map[string]string `json:"headers" validate:"omitempty" example:"'Authentication'': 'Basic bG9naW46cGFzc3dvcmQ='"`
+	ReqBody []byte            `json:"body" validate:"omitempty" `
+}
+
+func (a *AssignTaskReq) convert2service() entity.Task {
+	return entity.Task{
+		Id:      uuid.New().String(),
+		Method:  a.Method,
+		Url:     a.Url,
+		Headers: a.Headers,
+		ReqBody: a.ReqBody,
+		Status:  statusNew,
+	}
+}
+
+type CheckTaskResp struct {
+	Method         string            `json:"method" validate:"required,min=3,max=6,alpha,uppercase" example:"GET"`
+	Url            string            `json:"url" validate:"required" example:"http://google.com"`
+	Headers        map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
+	ReqBody        []byte            `json:"body" validate:"omitempty" `
+	Status         string            `json:"status" validate:"omitempty" example:"in_process"` //todo: seperate to new structure
+	HttpStatusCode int               `json:"http_status_code" validate:"omitempty"`
+	Length         int               `json:"length" validate:"omitempty"`
 }

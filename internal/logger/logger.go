@@ -29,11 +29,13 @@ func New(cnf *config.Conf) *Logger {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 	log.Logger = log.With().Caller().Logger()
 	logLevel, err := zerolog.ParseLevel(strings.ToLower(cnf.LogLevel))
+
 	if err != nil {
 		logLevel = zerolog.InfoLevel
 	}
 
 	log.WithLevel(logLevel).Msgf("Log level set to %s", logLevel)
+	zerolog.SetGlobalLevel(logLevel)
 
 	return &Logger{
 		logger: &log.Logger,

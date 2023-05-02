@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 )
 
 func Test_appHealth(t *testing.T) {
-	app := New(nil, &config.Conf{ServiceName: "test"})
+	app := router(nil, &config.Conf{ServiceName: "test"})
 
 	type args struct {
 		method   string

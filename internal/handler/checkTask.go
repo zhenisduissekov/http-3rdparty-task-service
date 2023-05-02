@@ -2,12 +2,28 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog/log"
 )
 
+// CheckTask godoc
+// @Security BasicAuth
+//
+//	@Summary		Проверить статус задачи
+//	@Description	проверка статуса задачи.
+//	@Tags			task
+//	@Accept			*/*
+//	@Produce		json
+//
+// @Param id path string true "comment ID"
+//
+//	@Success		200		object response		"успешный ответ"
+//	@Failure		400		object response		"ошибка запроса"
+//	@Failure		500		object response		"ошибка сервера"
+//	@Router			/api/v1/task/{id} [get]
 func (h *Handler) CheckTask(f *fiber.Ctx) error {
 	id := f.Params("id") //NOTE: if api/v1/task endpoint is removed then this would enforce the id to be passed in the query
 	if id == "" {
-		h.log.Error().Msgf(NoIdErrMsg)
+		log.Warn().Msgf(NoIdErrMsg)
 		return f.Status(fiber.StatusBadRequest).JSON(&response{
 			Status:  StatusError,
 			Message: BadRequestErrMsg,
@@ -15,9 +31,9 @@ func (h *Handler) CheckTask(f *fiber.Ctx) error {
 		})
 	}
 
-	status, err := h.service.CheckTask(id)
+	task, err := h.service.CheckTask(id)
 	if err != nil {
-		h.log.Error().Err(err).Msg(GetTaskStatusErrMsg)
+		log.Error().Err(err).Msg(GetTaskStatusErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{
 			Status:  StatusError,
 			Message: ServerErrMsg,
@@ -28,6 +44,6 @@ func (h *Handler) CheckTask(f *fiber.Ctx) error {
 	return f.Status(fiber.StatusOK).JSON(&response{
 		Status:  StatusSuccess,
 		Message: TaskCheckedMsg,
-		Results: status,
+		Results: task,
 	})
 }

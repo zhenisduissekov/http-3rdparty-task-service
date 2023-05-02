@@ -11,7 +11,7 @@ func Test_validate(t *testing.T) {
 	tests := []struct {
 		name string
 		desc string
-		args service.AssignTaskReq
+		args AssignTaskReq
 		want ErrorResponse
 	}{
 		{

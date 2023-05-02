@@ -20,8 +20,70 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/api/v1/task": {
-            "get": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "назначение задачи.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Назначить задачу",
+                "parameters": [
+                    {
+                        "description": "тело запроса",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.AssignTaskReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успешный ответ",
+                        "schema": {
+                            "$ref": "#/definitions/handler.response"
+                        }
+                    },
+                    "400": {
+                        "description": "ошибка запроса",
+                        "schema": {
+                            "$ref": "#/definitions/handler.response"
+                        }
+                    },
+                    "406": {
+                        "description": "ошибка валидации",
+                        "schema": {
+                            "$ref": "#/definitions/handler.response"
+                        }
+                    },
+                    "500": {
+                        "description": "ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/handler.response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/task/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "проверка статуса задачи.",
                 "consumes": [
                     "*/*"
                 ],
@@ -31,7 +93,16 @@ const docTemplate = `{
                 "tags": [
                     "task"
                 ],
-                "summary": "Назначить задачу",
+                "summary": "Проверить статус задачи",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "успешный ответ",
@@ -56,6 +127,40 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.AssignTaskReq": {
+            "type": "object",
+            "required": [
+                "method",
+                "url"
+            ],
+            "properties": {
+                "body": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "'Authentication''": " 'Basic bG9naW46cGFzc3dvcmQ='"
+                    }
+                },
+                "method": {
+                    "type": "string",
+                    "maxLength": 6,
+                    "minLength": 3,
+                    "example": "GET"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "http://google.com"
+                }
+            }
+        },
         "handler.response": {
             "type": "object",
             "properties": {

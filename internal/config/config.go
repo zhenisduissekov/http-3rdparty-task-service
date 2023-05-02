@@ -9,8 +9,10 @@ import (
 )
 
 type AuthConf struct {
-	Username string
-	Password string
+	Username       string
+	Password       string
+	Port           string
+	RequestTimeout time.Duration
 }
 
 type CacheConf struct {
@@ -33,8 +35,10 @@ func New() *Conf {
 	return &Conf{
 		ServiceName: "http_3rdparty_task_service",
 		Auth: AuthConf{
-			Username: os.Getenv("USER_NAME_API"),
-			Password: os.Getenv("PASSWORD_API"),
+			Username:       os.Getenv("USER_NAME_API"),
+			Password:       os.Getenv("PASSWORD_API"),
+			Port:           os.Getenv("PORT_API"),
+			RequestTimeout: getEnvDuration("REQUEST_TIMEOUT", "10s"),
 		},
 		Cache: CacheConf{
 			DefaultExpiration: getEnvDuration("CACHE_DEFAULT_EXPIRATION", "60s"),

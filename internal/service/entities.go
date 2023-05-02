@@ -1,48 +1,46 @@
 package service
 
 import (
+	"net/http"
 	"time"
+
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
 
 const (
-	cacheNotInitializedErrMsg = "cache not initialized"
-	requestTimeout            = 10 * time.Second
 	queueSize                 = 100
 	tickPeriod                = 2 * time.Second
-	notFoundErrMsg            = "not found"
-	unexpectedTypeErrMsg      = "unexpected type"
 	statusNew                 = "new"
-	statusError               = "error"
-	statusInProcess           = "in_process"
 	statusDone                = "done"
-	cacheLimit                = 1000
-	cacheLimitReachedErrMsg   = "cache limit reached, please try again"
+	statusError               = "error"
 	taskReceivedMsg           = "task received"
 	channelWasClosedMsg       = "channel was closed"
 	tickMsg                   = "tick"
-	itemIsNotAssignReq        = "item is not AssignTaskReq"
-	failedToPrepareReq        = "failed to prepare request"
-	failedRequest             = "request failed"
+	failedToMakeRequestErrMsg = "failed to make request"
 	failedToCloseRespBody     = "failed to close response body"
-	failedToReadRespBody      = "failed to read response body"
-	failedToGetItemErrMsg     = "failed to get item"
 )
 
-var queue = make(chan string, queueSize)
+var queue = make(chan entity.Task, queueSize)
 
-type AssignTaskReq struct {
-	Method  string            `json:"method" validate:"required,min=3,max=6,alpha,uppercase" example:"GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE"`
-	Url     string            `json:"url" validate:"required" example:"http://google.com"`
-	Headers map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
-	ReqBody []byte            `json:"body" validate:"omitempty" example:"{\"name\":\"John\"}"`
-	Status  string            `json:"status" validate:"omitempty" example:"done/in_process/error/new"`
+type Service interface {
+	AssignTask(items entity.Task) (string, error)
+	TaskQueue() error
+	CloseChannel()
+	CheckTask(id string) (entity.Task, error)
 }
 
-type AssignTaskResp struct {
-	Id             string            `json:"id" example:"4bf1119d-4e7e-4750-99f6-2df3b75acfda"`
-	Status         string            `json:"status" example:"done/in_process/error/new"`
-	HttpStatusCode int               `json:"httpStatusCode" example:"200"`
-	Headers        map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
-	Length         int               `json:"length" example:"100"`
-	Body           string            `json:"body" example:"{\"name\":\"John\"}"`
+type NewService struct {
+	httpClient *http.Client
+	repository *repository.Repository
+}
+
+func New(repository *repository.Repository, cnf *config.Conf) *NewService {
+	return &NewService{
+		httpClient: &http.Client{
+			Timeout: cnf.Auth.RequestTimeout,
+		},
+		repository: repository,
+	}
 }

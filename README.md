@@ -17,7 +17,7 @@ if needed to specify port
 ```
     go run main.go --port :4000
 ```
-if the project was more complicated, then I would use a Makefile to run the project and move main.go to ./cmd folder
+if the project was more complicated, then I would use a Makefile to run the project and move main.go to ./cmd folder to run it like go run ./cmd/main.go
 
 * run tests
 ```
@@ -30,18 +30,17 @@ if the project was more complicated, then I would use a Makefile to run the proj
 ```
 initializing swagger docs
 ```
-    swag init -g main.go
+    swag init -g /cmd/main.go
+
 ```
 
 ### Notes
-
+swag init -d ./cmd
 * grouped endpoints with `/api/v1` for future version control
 
 ### Used libraries
 
 * I chose fiber v2 for its speed and easy implementation, also it has very good test implementation, if I needed to use as fewer dependencies as possible, then I would use net/http or chi.
 However, net/http would require me to write more code.
-
-* Uber fx lets me write less code for dependency injection.
 
 * Zerolog is a very fast logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.

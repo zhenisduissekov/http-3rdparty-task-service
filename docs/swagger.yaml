@@ -1,5 +1,29 @@
 basePath: /
 definitions:
+  handler.AssignTaskReq:
+    properties:
+      body:
+        items:
+          type: integer
+        type: array
+      headers:
+        additionalProperties:
+          type: string
+        example:
+          '''Authentication''''': ' ''Basic bG9naW46cGFzc3dvcmQ='''
+        type: object
+      method:
+        example: GET
+        maxLength: 6
+        minLength: 3
+        type: string
+      url:
+        example: http://google.com
+        type: string
+    required:
+    - method
+    - url
+    type: object
   handler.response:
     properties:
       message:
@@ -16,10 +40,52 @@ info:
   title: http-3rdparty-task-service API
 paths:
   /api/v1/task:
+    post:
+      consumes:
+      - application/json
+      description: назначение задачи.
+      parameters:
+      - description: тело запроса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AssignTaskReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешный ответ
+          schema:
+            $ref: '#/definitions/handler.response'
+        "400":
+          description: ошибка запроса
+          schema:
+            $ref: '#/definitions/handler.response'
+        "406":
+          description: ошибка валидации
+          schema:
+            $ref: '#/definitions/handler.response'
+        "500":
+          description: ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.response'
+      security:
+      - BasicAuth: []
+      summary: Назначить задачу
+      tags:
+      - task
+  /api/v1/task/{id}:
     get:
       consumes:
       - '*/*'
-      description: назначение задачи.
+      description: проверка статуса задачи.
+      parameters:
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -35,7 +101,9 @@ paths:
           description: ошибка сервера
           schema:
             $ref: '#/definitions/handler.response'
-      summary: Назначить задачу
+      security:
+      - BasicAuth: []
+      summary: Проверить статус задачи
       tags:
       - task
 schemes:
