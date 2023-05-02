@@ -6,9 +6,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
 
 func TestGetRespHeaders(t *testing.T) {
@@ -118,4 +121,61 @@ func TestMakeRequest(t *testing.T) {
 	if headers["Content-Type"] != expectedHeaders["Content-Type"] {
 		t.Errorf("Unexpected headers: got %v, expected %v", headers["Content-Type"], expectedHeaders)
 	}
+}
+
+func TestNewService_CloseChannel(t *testing.T) {
+	t.Cleanup(func() {
+		queue = make(chan entity.Task, queueSize)
+	})
+	cnf := config.New()
+	repo := repository.NewRepository(cnf)
+	srv := New(repo, cnf)
+	srv.CloseChannel()
+	if val, ok := <-queue; ok {
+		t.Errorf("Channel is not closed: %v", val)
+	}
+}
+
+func TestNewService_AssignTask(t *testing.T) {
+	t.Parallel()
+	cnf := config.New()
+	repo := repository.NewRepository(cnf)
+	srv := New(repo, cnf)
+	items := entity.Task{
+		Id: "test1",
+	}
+	id, err := srv.AssignTask(items)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if id != items.Id {
+		t.Errorf("Unexpected id: %v", id)
+	}
+
+}
+
+func TestTaskQueue(t *testing.T) {
+	t.Cleanup(func() {
+		queue = make(chan entity.Task, queueSize)
+	})
+	cnf := config.New()
+	repo := repository.NewRepository(cnf)
+	srv := New(repo, cnf)
+	go func() {
+		srv.TaskQueue()
+	}()
+	queue <- entity.Task{
+		Id:      "123",
+		Url:     "http://example.com",
+		Method:  http.MethodGet,
+		ReqBody: "",
+	}
+	time.Sleep(100 * time.Millisecond)
+	if len(queue) != 0 {
+		t.Errorf("queue still has items, want empty queue")
+	}
+	if len(queue) == 0 {
+		srv.CloseChannel()
+	}
+	time.Sleep(100 * time.Millisecond)
 }

@@ -18,7 +18,7 @@ func (s *NewService) AssignTask(items entity.Task) (string, error) {
 	return items.Id, nil
 }
 
-func (s *NewService) TaskQueue() error {
+func (s *NewService) TaskQueue() {
 	ticker := time.NewTicker(tickPeriod)
 	defer ticker.Stop()
 
@@ -27,7 +27,7 @@ func (s *NewService) TaskQueue() error {
 		case nextTask, ok := <-queue:
 			if !ok {
 				log.Warn().Msg(channelWasClosedMsg)
-				return nil
+				return
 			}
 			log.Info().Msg(taskReceivedMsg)
 			s.processNextTask(nextTask)
@@ -36,7 +36,7 @@ func (s *NewService) TaskQueue() error {
 		}
 	}
 
-	return nil
+	return
 }
 
 func (s *NewService) CloseChannel() {
