@@ -40,17 +40,7 @@ func main() {
 	srv := service.New(repo, cnf)
 	h := handler.New(srv)
 	app := router(h, cnf)
-
-	//ctx, cancel := context.WithCancel(context.Background())
-	//go func(ctx context.Context) {
-	//	srv.TaskQueue(ctx)
-	//}(ctx)
-	//
-	//if err := app.Listen(":"+cnf.Auth.Port); err != nil {
-	//	cancel()
-	//	log.Fatal().Err(err).Msg("error while starting the server")
-	//}
-
+	
 	go func() {
 		srv.TaskQueue()
 	}()
