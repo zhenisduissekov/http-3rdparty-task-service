@@ -9,10 +9,6 @@ import (
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
 )
 
-const (
-	msg = "message"
-)
-
 // testing different levels of logging: error, debug, info, warn
 
 func TestLogger_Error(t *testing.T) {
@@ -20,6 +16,7 @@ func TestLogger_Error(t *testing.T) {
 	log := zerolog.New(tst).With().Timestamp().Logger()
 	srv := New(&config.Conf{LogLevel: "info"})
 	srv.logger = &log
+	msg := "message"
 	srv.Error().Msg(msg)
 	ent := tst.LastEntry()
 	ent.ExpMsg(msg)
@@ -27,9 +24,10 @@ func TestLogger_Error(t *testing.T) {
 }
 
 func TestLogger_Debug(t *testing.T) {
+	msg := "message"
 	tst := zltest.New(t)
 	log := zerolog.New(tst).With().Timestamp().Logger()
-	srv := New(&config.Conf{LogLevel: "info"})
+	srv := New(&config.Conf{LogLevel: "debug"})
 	srv.logger = &log
 	srv.Debug().Msg(msg)
 	ent := tst.LastEntry()
@@ -38,9 +36,10 @@ func TestLogger_Debug(t *testing.T) {
 }
 
 func TestLogger_Info(t *testing.T) {
+	msg := "message"
 	tst := zltest.New(t)
 	log := zerolog.New(tst).With().Timestamp().Logger()
-	srv := New(&config.Conf{LogLevel: "info"})
+	srv := New(&config.Conf{LogLevel: "debug"})
 	srv.logger = &log
 	srv.Info().Msg(msg)
 	ent := tst.LastEntry()
@@ -49,6 +48,7 @@ func TestLogger_Info(t *testing.T) {
 }
 
 func TestLogger_Warn(t *testing.T) {
+	msg := "message"
 	tst := zltest.New(t)
 	log := zerolog.New(tst).With().Timestamp().Logger()
 	srv := New(&config.Conf{LogLevel: "info"})
@@ -60,6 +60,7 @@ func TestLogger_Warn(t *testing.T) {
 }
 
 func TestLogger_ErrorExists(t *testing.T) {
+	msg := "message"
 	tst := zltest.New(t)
 	log := zerolog.New(tst).With().Timestamp().Logger()
 	srv := New(&config.Conf{LogLevel: "info"})

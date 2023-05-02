@@ -5,8 +5,8 @@ type Task struct {
 	Method         string
 	Url            string
 	Headers        map[string]string
-	ReqBody        []byte
-	RespBody       []byte
+	ReqBody        string
+	RespBody       string
 	Status         string
 	HttpStatusCode int
 	Length         int

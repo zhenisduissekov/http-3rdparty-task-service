@@ -3,9 +3,8 @@ definitions:
   handler.AssignTaskReq:
     properties:
       body:
-        items:
-          type: integer
-        type: array
+        example: some body
+        type: string
       headers:
         additionalProperties:
           type: string
@@ -14,15 +13,10 @@ definitions:
         type: object
       method:
         example: GET
-        maxLength: 6
-        minLength: 3
         type: string
       url:
         example: http://google.com
         type: string
-    required:
-    - method
-    - url
     type: object
   handler.response:
     properties:

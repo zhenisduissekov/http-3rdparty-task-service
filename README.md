@@ -34,6 +34,16 @@ initializing swagger docs
 
 ```
 
+to run with docker-compose
+```
+    docker-compose up
+```
+
+to stop docker-compose
+```
+    docker-compose down
+```
+
 ### Notes
 swag init -d ./cmd
 * grouped endpoints with `/api/v1` for future version control
@@ -44,3 +54,9 @@ swag init -d ./cmd
 However, net/http would require me to write more code.
 
 * Zerolog is a very fast logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.
+
+* I used swag for swagger documentation, it is very easy to use and it has a lot of features.
+
+* I used testify for testing, it is very easy to use and it has a lot of features.
+
+* I used go cache for caching, it is very easy to use and it has a lot of features, but also using repository makes it easy to replace my choice.

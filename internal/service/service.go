@@ -62,7 +62,7 @@ func (s *NewService) processNextTask(items entity.Task) {
 		Status:         status,
 		HttpStatusCode: statusCode,
 		ReqBody:        items.ReqBody,
-		RespBody:       body,
+		RespBody:       string(body),
 		Length:         len(body),
 		Headers:        headers,
 	})
@@ -93,7 +93,7 @@ func (s *NewService) makeRequest(items entity.Task) ([]byte, map[string]string, 
 }
 
 func prepReq(items entity.Task) (*http.Request, error) {
-	req, err := http.NewRequest(items.Method, items.Url, bytes.NewBuffer(items.ReqBody))
+	req, err := http.NewRequest(items.Method, items.Url, bytes.NewBuffer([]byte(items.ReqBody)))
 	if err != nil {
 		return nil, err
 	}

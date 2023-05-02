@@ -9,7 +9,7 @@ type Task struct {
 	Method  string
 	Url     string
 	Headers map[string]string
-	ReqBody []byte
+	ReqBody string
 	Status  string
 }
 

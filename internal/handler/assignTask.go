@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/validate"
 )
 
 // AssignTask godoc
@@ -34,17 +33,17 @@ func (h *Handler) AssignTask(f *fiber.Ctx) error {
 		})
 	}
 
-	error := validate.Validate(items)
-	if error != nil {
+	convItems, err := items.convert2service()
+	if err != nil {
 		log.Err(err).Msg(InputParamsValidErrMsg)
 		return f.Status(fiber.StatusNotAcceptable).JSON(&response{
 			Status:  StatusError,
 			Message: BadRequestErrMsg,
-			Results: error, //NOTE: would replace this with a template, if it was a real project
+			Results: err.Error(), //NOTE: I would replace this with a template, if it was a real project
 		})
 	}
 
-	id, err := h.service.AssignTask(items.convert2service())
+	id, err := h.service.AssignTask(convItems)
 	if err != nil {
 		log.Err(err).Msgf(TaskAssignErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{

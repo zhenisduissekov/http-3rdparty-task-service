@@ -129,16 +129,10 @@ const docTemplate = `{
     "definitions": {
         "handler.AssignTaskReq": {
             "type": "object",
-            "required": [
-                "method",
-                "url"
-            ],
             "properties": {
                 "body": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string",
+                    "example": "some body"
                 },
                 "headers": {
                     "type": "object",
@@ -151,8 +145,6 @@ const docTemplate = `{
                 },
                 "method": {
                     "type": "string",
-                    "maxLength": 6,
-                    "minLength": 3,
                     "example": "GET"
                 },
                 "url": {
