@@ -7,6 +7,7 @@ import (
 )
 
 func Test_validate(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		desc string

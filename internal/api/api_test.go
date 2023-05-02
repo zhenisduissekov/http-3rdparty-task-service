@@ -6,38 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
 )
-
-func Test_app(t *testing.T) {
-	message := "Hello, World!"
-	app := New(nil, &config.Conf{ServiceName: "test"})
-
-	app.Get("/hello", func(c *fiber.Ctx) error {
-		return c.SendString(message)
-	})
-
-	req, err := http.NewRequest(http.MethodGet, "/hello", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := app.Test(req, -1)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("Expected status code %d but got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	expected := message
-	actual, _ := io.ReadAll(resp.Body)
-	if string(actual) != expected {
-		t.Errorf("Expected response body %q but got %q", expected, actual)
-	}
-}
 
 func Test_appHealth(t *testing.T) {
 	app := New(nil, &config.Conf{ServiceName: "test"})
@@ -86,20 +56,6 @@ func Test_appHealth(t *testing.T) {
 				checkBody: false,
 			},
 		},
-		//{
-		//	name: "test3",
-		//	desc: "check task id responds with 200",
-		//	args: args{
-		//		method:   "GET",
-		//		endpoint: "/api/v1/task/id",
-		//		body:     nil,
-		//	},
-		//	want: want{
-		//		status:    http.StatusOK,
-		//		message:   "",
-		//		checkBody: false,
-		//	},
-		//},
 	}
 
 	for _, tt := range tests {
