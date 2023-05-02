@@ -1,7 +1,8 @@
 package main
 
 import (
-	"context"
+	"os"
+	"os/signal"
 
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
@@ -40,15 +41,36 @@ func main() {
 	h := handler.New(srv)
 	app := router(h, cnf)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	go func(ctx context.Context) {
-		srv.TaskQueue(ctx)
-	}(ctx)
+	//ctx, cancel := context.WithCancel(context.Background())
+	//go func(ctx context.Context) {
+	//	srv.TaskQueue(ctx)
+	//}(ctx)
+	//
+	//if err := app.Listen(":"+cnf.Auth.Port); err != nil {
+	//	cancel()
+	//	log.Fatal().Err(err).Msg("error while starting the server")
+	//}
 
-	if err := app.Listen(":"+cnf.Auth.Port); err != nil {
-		defer cancel()
-		log.Fatal().Err(err).Msg("error while starting the server")
+	go func() {
+		srv.TaskQueue()
+	}()
+
+	go func() {
+		if err := app.Listen(":" + cnf.Auth.Port); err != nil {
+			log.Fatal().Err(err).Msg("error while starting the server")
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	log.Info().Msg("Shutting down server...")
+	srv.CloseChannel()
+	if err := app.Shutdown(); err != nil {
+		log.Fatal().Err(err).Msg("Server forced to shutdown")
 	}
+	log.Info().Msg("Shutting down app...")
 }
 
 func router(h *handler.Handler, conf *config.Conf) *fiber.App {
@@ -95,43 +117,3 @@ func router(h *handler.Handler, conf *config.Conf) *fiber.App {
 
 	return app
 }
-
-//func main0() {
-//	flag.Parse()
-//	//besides being short and concise, uber fx DI provides modularity and composition, also testability for future development
-//	app := fx.New(
-//		fx.Provide(
-//			config.New,
-//			logger.New,
-//			service.New,
-//			handler.New,
-//			repository.NewRepository,
-//			api.New, //NOTE 2: endpoints are here
-//		),
-//		fx.Invoke(setupLifeCycle),
-//	)
-//	app.Run()
-//}
-//
-//func setupLifeCycle(lc fx.Lifecycle, app *fiber.App, srv *service.Service) {
-//	var cancel context.CancelFunc
-//	lc.Append(fx.Hook{
-//		OnStart: func(ctx context.Context) error {
-//			ctx, cancel = context.WithCancel(ctx)
-//			var err error
-//			go srv.TaskQueue()
-//			go func(ctx context.Context) {
-//				flag.Parse()
-//				err = app.Listen(*listenAddress)
-//				ctx.Done()
-//			}(ctx)
-//
-//			return err
-//		},
-//		OnStop: func(ctx context.Context) error {
-//			cancel()
-//			srv.CloseChannel()
-//			return app.Shutdown() //with graceful shutdown
-//		},
-//	})
-//}

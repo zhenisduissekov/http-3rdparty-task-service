@@ -11,12 +11,12 @@ import (
 
 const (
 	queueSize                 = 100
-	tickPeriod                = 2 * time.Second
+	tickPeriod                = 1 * time.Second
 	statusNew                 = "new"
 	statusDone                = "done"
 	statusError               = "error"
 	taskReceivedMsg           = "task received"
-	channelWasClosedMsg       = "channel was closed"
+	channelWasClosedMsg       = "channel was closed, exiting task queue"
 	tickMsg                   = "tick"
 	failedToMakeRequestErrMsg = "failed to make request"
 	failedToCloseRespBody     = "failed to close response body"

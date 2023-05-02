@@ -2,7 +2,6 @@ package service
 
 import (
 	"bytes"
-	"context"
 	"io"
 	"net/http"
 	"strings"
@@ -19,7 +18,7 @@ func (s *NewService) AssignTask(items entity.Task) (string, error) {
 	return items.Id, nil
 }
 
-func (s *NewService) TaskQueue(ctx context.Context) error {
+func (s *NewService) TaskQueue() error {
 	ticker := time.NewTicker(tickPeriod)
 	defer ticker.Stop()
 
@@ -34,9 +33,6 @@ func (s *NewService) TaskQueue(ctx context.Context) error {
 			s.processNextTask(nextTask)
 		case <-ticker.C:
 			log.Debug().Msg(tickMsg)
-		case <-ctx.Done():
-			s.CloseChannel() //todo: unclear
-			return nil
 		}
 	}
 
@@ -44,6 +40,7 @@ func (s *NewService) TaskQueue(ctx context.Context) error {
 }
 
 func (s *NewService) CloseChannel() {
+	log.Warn().Msg("closing channel")
 	close(queue)
 }
 
