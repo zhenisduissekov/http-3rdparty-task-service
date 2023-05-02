@@ -10,6 +10,7 @@ const (
 	queueSize                 = 100
 	tickPeriod                = 2 * time.Second
 	notFoundErrMsg            = "not found"
+	unexpectedTypeErrMsg      = "unexpected type"
 	statusNew                 = "new"
 	statusError               = "error"
 	statusInProcess           = "in_process"

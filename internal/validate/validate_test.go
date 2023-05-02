@@ -3,7 +3,7 @@ package validate
 import (
 	"testing"
 
-		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
 )
 
 func Test_validate(t *testing.T) {
@@ -39,7 +39,7 @@ func Test_validate(t *testing.T) {
 				ReceivedValue: "",
 				FailedField:   "AssignTaskReq.Url",
 			},
-		},		
+		},
 	}
 
 	for _, tt := range tests {

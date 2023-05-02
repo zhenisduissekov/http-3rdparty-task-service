@@ -24,8 +24,14 @@ func (s *Service) CheckTask(id string) (AssignTaskResp, error) {
 	case AssignTaskResp:
 		return item.(AssignTaskResp), nil
 	case AssignTaskReq:
-		return AssignTaskResp{}, nil
+		return AssignTaskResp{
+			Id:     id,
+			Status: statusInProcess,
+		}, nil
 	default:
-		return AssignTaskResp{}, errors.New("unknown type")
+		return AssignTaskResp{
+			Id:     id,
+			Status: statusError,
+		}, errors.New(unexpectedTypeErrMsg)
 	}
 }

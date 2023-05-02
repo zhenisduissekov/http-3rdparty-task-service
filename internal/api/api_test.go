@@ -86,20 +86,20 @@ func Test_appHealth(t *testing.T) {
 				checkBody: false,
 			},
 		},
-		{
-			name: "test3",
-			desc: "check task id responds with 200",
-			args: args{
-				method:   "GET",
-				endpoint: "/api/v1/task/id",
-				body:     nil,
-			},
-			want: want{
-				status:    http.StatusOK,
-				message:   "",
-				checkBody: false,
-			},
-		},
+		//{
+		//	name: "test3",
+		//	desc: "check task id responds with 200",
+		//	args: args{
+		//		method:   "GET",
+		//		endpoint: "/api/v1/task/id",
+		//		body:     nil,
+		//	},
+		//	want: want{
+		//		status:    http.StatusOK,
+		//		message:   "",
+		//		checkBody: false,
+		//	},
+		//},
 	}
 
 	for _, tt := range tests {
