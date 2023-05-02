@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
-"github.com/zhenisduissekov/http-3rdparty-task-service/internal/validate"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/validate"
 )
 
 // AssignTask godoc

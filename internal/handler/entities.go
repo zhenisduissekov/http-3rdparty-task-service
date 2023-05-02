@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	StatusSuccess    = "success"
-	StatusError      = "error"
-	BadRequestErrMsg = "please check your request"
-	ServerErrMsg     = "server error, please try again later"
-	TaskAssignedMsg  = "task assigned"
-	TaskCheckedMsg  	= "task checked"
-
+	StatusSuccess          = "success"
+	StatusError            = "error"
+	BadRequestErrMsg       = "please check your request"
+	ServerErrMsg           = "server error, please try again later"
+	TaskAssignedMsg        = "task assigned"
+	TaskCheckedMsg         = "task checked"
+	NoIdErrMsg             = "no id provided"
 	ParseErrMsg            = "could not parse query/body"
 	InputParamsValidErrMsg = "input parameters validation error"
 	TaskAssignErrMsg       = "assign task error"

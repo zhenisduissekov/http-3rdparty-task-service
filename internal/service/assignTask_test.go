@@ -17,10 +17,9 @@ func TestService_AssignTask_NoCacheInitialized(t *testing.T) {
 	assert.Equal(t, cacheNotInitializedErrMsg, err.Error())
 }
 
-
 func TestService_AssignTask_LimitHit(t *testing.T) {
 	s := New(&config.Conf{}, nil)
-	for i:=0; i<1000; i++ {
+	for i := 0; i < 1000; i++ {
 		s.Cache.Set(fmt.Sprintf("key %d", i), i, 0)
 	}
 	s.Cache.Set("test", "test", 0)

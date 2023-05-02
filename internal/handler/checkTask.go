@@ -1,11 +1,19 @@
 package handler
 
 import (
-		"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
 func (h *Handler) CheckTask(f *fiber.Ctx) error {
-	id := f.Params("id")
+	id := f.Params("id") //NOTE: if api/v1/task endpoint is removed then this would enforce the id to be passed in the query
+	if id == "" {
+		h.log.Error().Msgf(NoIdErrMsg)
+		return f.Status(fiber.StatusBadRequest).JSON(&response{
+			Status:  StatusError,
+			Message: BadRequestErrMsg,
+			Results: NoIdErrMsg,
+		})
+	}
 
 	status, err := h.service.CheckTask(id)
 	if err != nil {

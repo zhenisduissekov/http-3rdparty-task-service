@@ -44,14 +44,6 @@ func New() *Conf {
 	}
 }
 
-func getEnv(key string, defaultValue string) string {
-	value, ok := os.LookupEnv(key)
-	if !ok {
-		return defaultValue
-	}
-	return value
-}
-
 func getEnvDuration(key string, defaultValue string) time.Duration {
 	value, ok := os.LookupEnv(key)
 	if !ok {

@@ -4,8 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-
-func (h *Handler) GetAllTasks (f *fiber.Ctx) error {
+func (h *Handler) GetAllTasks(f *fiber.Ctx) error {
 	allTasks, err := h.service.GetAllTasks()
 	if err != nil {
 		h.log.Error().Err(err).Msg(GetTaskStatusErrMsg)

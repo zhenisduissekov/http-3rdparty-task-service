@@ -10,7 +10,7 @@ func (s *Service) AssignTask(items AssignTaskReq) (string, error) {
 	if s.Cache == nil {
 		return "", errors.New(cacheNotInitializedErrMsg)
 	}
-	
+
 	if s.Cache.ItemCount() > cacheLimit { //NOTE: to control cache size
 		s.Cache.DeleteExpired()
 		return "", errors.New(cacheLimitReachedErrMsg) //NOTE: just an example of error handling and error message

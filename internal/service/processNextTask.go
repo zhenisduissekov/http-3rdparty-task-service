@@ -16,9 +16,9 @@ func (s *Service) processNextTask(id string) {
 		s.log.Error().Err(err).Msg(failedToGetItemErrMsg)
 		return
 	}
-	
+
 	req, err := prepReq(items)
-	if err!= nil {
+	if err != nil {
 		s.log.Error().Err(err).Msg(failedToPrepareReq)
 		return
 	}
@@ -40,27 +40,26 @@ func (s *Service) processNextTask(id string) {
 		s.log.Error().Err(err).Msg(failedToReadRespBody)
 		return
 	}
-	
+
 	response := AssignTaskResp{
-		Id:    id,
+		Id: id,
 		//Body:  string(body), //NOTE: optional, makes response too big to read
-		Status: statusDone,
+		Status:         statusDone,
 		HttpStatusCode: resp.StatusCode,
-		Length: len(body),
-		Headers: getRespHeaders(resp),
+		Length:         len(body),
+		Headers:        getRespHeaders(resp),
 	}
 
 	s.Cache.Set(id, response, cache.DefaultExpiration)
 
 }
 
-
 func prepReq(items AssignTaskReq) (*http.Request, error) {
 	req, err := http.NewRequest(items.Method, items.Url, bytes.NewBuffer(items.ReqBody))
 	if err != nil {
 		return nil, err
 	}
-	
+
 	for k, v := range items.Headers {
 		req.Header.Set(k, v)
 	}
@@ -70,12 +69,11 @@ func prepReq(items AssignTaskReq) (*http.Request, error) {
 
 func getRespHeaders(resp *http.Response) map[string]string {
 	headers := make(map[string]string)
-    for key, values := range resp.Header {
-        headers[key] = strings.Join(values, ",")
-    }
+	for key, values := range resp.Header {
+		headers[key] = strings.Join(values, ",")
+	}
 	return headers
 }
-
 
 func (s *Service) getItem(id string) (AssignTaskReq, error) {
 	item, ok := s.Cache.Get(id)
@@ -87,6 +85,6 @@ func (s *Service) getItem(id string) (AssignTaskReq, error) {
 	if !ok {
 		return AssignTaskReq{}, errors.New(itemIsNotAssignReq)
 	}
-	
+
 	return items, nil
 }

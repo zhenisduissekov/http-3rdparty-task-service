@@ -12,6 +12,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.1
+	github.com/rzajac/zltest v0.12.0
 	github.com/stretchr/testify v1.8.2
 	github.com/swaggo/swag v1.16.1
 	go.uber.org/fx v1.19.2

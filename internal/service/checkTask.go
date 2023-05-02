@@ -11,7 +11,7 @@ func (s *Service) CheckTask(id string) (AssignTaskResp, error) {
 			Status: statusError,
 		}, errors.New(cacheNotInitializedErrMsg)
 	}
-	
+
 	item, found := s.Cache.Get(id)
 	if !found {
 		return AssignTaskResp{
@@ -19,7 +19,7 @@ func (s *Service) CheckTask(id string) (AssignTaskResp, error) {
 			Status: statusError,
 		}, errors.New(notFoundErrMsg)
 	}
-	
+
 	switch item.(type) {
 	case AssignTaskResp:
 		return item.(AssignTaskResp), nil
@@ -29,4 +29,3 @@ func (s *Service) CheckTask(id string) (AssignTaskResp, error) {
 		return AssignTaskResp{}, errors.New("unknown type")
 	}
 }
-

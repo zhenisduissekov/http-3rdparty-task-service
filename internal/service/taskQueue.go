@@ -40,7 +40,7 @@ func (s *Service) TaskQueue() error {
 
 			s.processNextTask(nextTask)
 		case <-ticker.C:
-			s.log.Trace().Msg(tickMsg)
+			continue
 		}
 	}
 

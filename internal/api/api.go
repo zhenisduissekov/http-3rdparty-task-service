@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/ansrivas/fiberprometheus/v2"
-	"github.com/gofiber/fiber/v2"
+		"github.com/ansrivas/fiberprometheus/v2"
+"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
@@ -40,14 +40,14 @@ func New(h *handler.Handler, conf *config.Conf) *fiber.App {
 			"status": "success",
 		})
 	})
-	
+
 	//app.Use(basicauth.New(basicauth.Config{ //todo: basic auth needs to be uncommented in production
 	//	Users: map[string]string{
 	//		conf.Auth.Username: conf.Auth.Password,
 	//	},
 	//	Realm: "Forbidden",
 	//}))
-	
+
 	app.Use(logger.New(logger.Config{
 		Format:       reqLogFormat,
 		TimeFormat:   reqTimeFormat,
@@ -55,10 +55,10 @@ func New(h *handler.Handler, conf *config.Conf) *fiber.App {
 		TimeInterval: 0,
 		Output:       nil,
 	}))
-	
+
 	api := app.Group("/api/v1")
 	{
-    	api.Get("/task", h.GetAllTasks)   // get all tasks -- for debugging purposes only
+		api.Get("/task", h.GetAllTasks)   // get all tasks -- for debugging purposes only
 		api.Get("/task/:id", h.CheckTask) // get the status of a task by using its id  [pending/in_process/done/new/failed]
 		api.Post("/task", h.AssignTask)   // add a task to the queue
 	}
