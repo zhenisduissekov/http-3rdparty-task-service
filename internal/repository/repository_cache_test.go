@@ -2,14 +2,14 @@ package repository
 
 import (
 	"fmt"
-"io"
-"net/http"
-"net/http/httptest"
-"testing"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-"github.com/zhenisduissekov/http-3rdparty-task-service/config"
-		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 )
 
 func TestRepoCache_Set(t *testing.T) {
@@ -47,7 +47,6 @@ func TestRepoCache_Set_Not_Found(t *testing.T) {
 	assert.Equal(t, id, entity.Task{})
 }
 
-
 func TestGetRespHeaders(t *testing.T) {
 	t.Parallel()
 	// Create a new HTTP response with test headers
@@ -68,7 +67,6 @@ func TestGetRespHeaders(t *testing.T) {
 	}
 	assert.Equal(t, expectedHeaders, headers)
 }
-
 
 func TestPrepReq(t *testing.T) {
 	t.Parallel()

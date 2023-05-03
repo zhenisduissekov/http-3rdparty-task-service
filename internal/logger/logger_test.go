@@ -1,7 +1,7 @@
 package logger
 
 import (
-"testing"
+	"testing"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"

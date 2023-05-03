@@ -1,9 +1,9 @@
 package repository
-import (
-"github.com/zhenisduissekov/http-3rdparty-task-service/config"
-"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
-)
 
+import (
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+)
 
 type Storage interface {
 	Set(key string, value entity.Task)

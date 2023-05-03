@@ -1,6 +1,6 @@
 package entity
-import "time"
 
+import "time"
 
 const (
 	QueueSize                 = 100

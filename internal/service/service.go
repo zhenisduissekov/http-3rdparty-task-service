@@ -5,7 +5,6 @@ import (
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
 
-
 type Task interface {
 	Assign(items entity.Task) (string, error)
 	StartQueue()
