@@ -37,12 +37,12 @@ func main() {
 	zlog.New(cnf)
 
 	repo := repository.NewRepository(cnf)
-	srv := service.New(repo, cnf)
+	srv := service.NewService(repo)
 	h := handler.New(srv)
 	app := router(h, cnf)
 
 	go func() {
-		srv.Task.StartQueue()
+		srv.StartQueue()
 	}()
 
 	go func() {
@@ -56,7 +56,7 @@ func main() {
 	<-quit
 
 	log.Info().Msg("Shutting down server...")
-	srv.Task.CloseQueue()
+	srv.CloseQueue()
 	if err := app.Shutdown(); err != nil {
 		log.Fatal().Err(err).Msg("Server forced to shutdown")
 	}

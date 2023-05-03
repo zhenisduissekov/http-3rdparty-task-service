@@ -1,67 +1,24 @@
 package service
 
 import (
-					"time"
-
-	"github.com/rs/zerolog/log"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
 
-func (s *NewService) Assign(items entity.Task) (string, error) {
-	items.Status = statusNew
-	s.repository.Set(items.Id, items)
-	queue <- items
-	return items.Id, nil
+
+type Task interface {
+	Assign(items entity.Task) (string, error)
+	StartQueue()
+	CloseQueue()
+	Check(id string) (entity.Task, error)
 }
 
-func (s *NewService) Check(id string) (entity.Task, error) {
-	return s.repository.Get(id)
+type Service struct {
+	Task
 }
 
-func (s *NewService) StartQueue() {
-	ticker := time.NewTicker(tickPeriod)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case nextTask, ok := <-queue:
-			if !ok {
-				log.Warn().Msg(channelWasClosedMsg)
-				return
-			}
-			log.Info().Msg(taskReceivedMsg)
-			s.processNextTask(nextTask)
-		case <-ticker.C:
-			log.Debug().Msg(tickMsg)
-		}
+func NewService(repository *repository.Repository) *Service {
+	return &Service{
+		Task: NewTask(repository),
 	}
-
-	return
 }
-
-func (s *NewService) CloseQueue() {
-	log.Warn().Msg("closing channel")
-	close(queue)
-}
-
-func (s *NewService) processNextTask(items entity.Task) {
-	status := statusDone
-	body, headers, statusCode, err := s.repository.MakeRequest(items)
-	if err != nil {
-		log.Error().Err(err).Msg(failedToMakeRequestErrMsg)
-		status = statusError
-	}
-
-	s.repository.Set(items.Id, entity.Task{
-		Id:             items.Id,
-		Url:            items.Url,
-		Method:         items.Method,
-		Status:         status,
-		HttpStatusCode: statusCode,
-		ReqBody:        items.ReqBody,
-		RespBody:       string(body),
-		Length:         len(body),
-		Headers:        headers,
-	})
-}
-

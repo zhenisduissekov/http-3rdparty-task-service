@@ -31,7 +31,7 @@ func (h *Handler) Check(f *fiber.Ctx) error {
 		})
 	}
 
-	task, err := h.service.Task.Check(id)
+	task, err := h.service.Check(id)
 	if err != nil {
 		log.Error().Err(err).Msg(GetTaskStatusErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{

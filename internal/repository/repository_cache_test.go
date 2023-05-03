@@ -1,18 +1,52 @@
-package service
+package repository
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"time"
+"io"
+"net/http"
+"net/http/httptest"
+"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
+
+func TestRepoCache_Set(t *testing.T) {
+	cnf := config.New()
+	repoCache := NewCache(cnf)
+	repoCache.Set("key", entity.Task{
+		Id: "id",
+	})
+	id, err := repoCache.Get("key")
+	assert.NoError(t, err)
+	assert.Equal(t, "id", id.Id)
+}
+
+func TestRepoCache_Set_Overwrite(t *testing.T) {
+	cnf := config.New()
+	repoCache := NewCache(cnf)
+	repoCache.Set("key", entity.Task{
+		Id: "id",
+	})
+
+	repoCache.Set("key", entity.Task{
+		Id: "id2",
+	})
+	id, err := repoCache.Get("key")
+	assert.NoError(t, err)
+	assert.Equal(t, "id2", id.Id)
+}
+
+func TestRepoCache_Set_Not_Found(t *testing.T) {
+	cnf := config.New()
+	repoCache := NewCache(cnf)
+	id, err := repoCache.Get("key")
+	assert.Error(t, err)
+	assert.Equal(t, "no task found", err.Error())
+	assert.Equal(t, id, entity.Task{})
+}
+
 
 func TestGetRespHeaders(t *testing.T) {
 	t.Parallel()
@@ -34,6 +68,7 @@ func TestGetRespHeaders(t *testing.T) {
 	}
 	assert.Equal(t, expectedHeaders, headers)
 }
+
 
 func TestPrepReq(t *testing.T) {
 	t.Parallel()
@@ -68,7 +103,7 @@ func TestPrepReq(t *testing.T) {
 	}
 
 	// Check the request body
-	reqBody, err := ioutil.ReadAll(req.Body)
+	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
 		t.Fatalf("Error reading request body: %s", err.Error())
 	}
@@ -101,11 +136,11 @@ func TestMakeRequest(t *testing.T) {
 		ReqBody: "",
 	}
 
-	service := &NewService{
+	repository := &RepoCache{
 		httpClient: mockClient,
 	}
 
-	body, headers, status, err := service.makeRequest(task)
+	body, headers, status, err := repository.MakeRequest(task)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -121,61 +156,4 @@ func TestMakeRequest(t *testing.T) {
 	if headers["Content-Type"] != expectedHeaders["Content-Type"] {
 		t.Errorf("Unexpected headers: got %v, expected %v", headers["Content-Type"], expectedHeaders)
 	}
-}
-
-func TestNewService_CloseChannel(t *testing.T) {
-	t.Cleanup(func() {
-		queue = make(chan entity.Task, queueSize)
-	})
-	cnf := config.New()
-	repo := repository.NewRepository(cnf)
-	srv := New(repo, cnf)
-	srv.CloseQueue()
-	if val, ok := <-queue; ok {
-		t.Errorf("Channel is not closed: %v", val)
-	}
-}
-
-func TestNewService_AssignTask(t *testing.T) {
-	t.Parallel()
-	cnf := config.New()
-	repo := repository.NewRepository(cnf)
-	srv := New(repo, cnf)
-	items := entity.Task{
-		Id: "test1",
-	}
-	id, err := srv.Assign(items)
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
-	if id != items.Id {
-		t.Errorf("Unexpected id: %v", id)
-	}
-
-}
-
-func TestTaskQueue(t *testing.T) {
-	t.Cleanup(func() {
-		queue = make(chan entity.Task, queueSize)
-	})
-	cnf := config.New()
-	repo := repository.NewRepository(cnf)
-	srv := New(repo, cnf)
-	go func() {
-		srv.StartQueue()
-	}()
-	queue <- entity.Task{
-		Id:      "123",
-		Url:     "http://example.com",
-		Method:  http.MethodGet,
-		ReqBody: "",
-	}
-	time.Sleep(100 * time.Millisecond)
-	if len(queue) != 0 {
-		t.Errorf("queue still has items, want empty queue")
-	}
-	if len(queue) == 0 {
-		srv.CloseQueue()
-	}
-	time.Sleep(100 * time.Millisecond)
 }
