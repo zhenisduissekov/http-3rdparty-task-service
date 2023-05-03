@@ -101,8 +101,8 @@ func router(h *handler.Handler, conf *config.Conf) *fiber.App {
 
 	api := app.Group("/api/v1")
 	{
-		api.Get("/task/:id", h.CheckTask) // get the status of a task by using its id  [pending/in_process/done/new/failed]
-		api.Post("/task", h.AssignTask)   // add a task to the queue
+		api.Get("/task/:id", h.Check) // get the status of a task by using its id  [pending/in_process/done/new/failed]
+		api.Post("/task", h.Assign)   // add a task to the queue
 	}
 
 	return app

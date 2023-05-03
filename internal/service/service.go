@@ -18,6 +18,10 @@ func (s *NewService) Assign(items entity.Task) (string, error) {
 	return items.Id, nil
 }
 
+func (s *NewService) Check(id string) (entity.Task, error) {
+	return s.repository.Get(id)
+}
+
 func (s *NewService) StartQueue() {
 	ticker := time.NewTicker(tickPeriod)
 	defer ticker.Stop()
@@ -112,8 +116,4 @@ func getRespHeaders(resp *http.Response) map[string]string {
 		headers[key] = strings.Join(values, ",")
 	}
 	return headers
-}
-
-func (s *NewService) Check(id string) (entity.Task, error) {
-	return s.repository.Get(id)
 }

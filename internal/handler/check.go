@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// CheckTask godoc
+// Check godoc
 // @Security BasicAuth
 //
 //	@Summary		Проверить статус задачи
@@ -20,7 +20,7 @@ import (
 //	@Failure		400		object response		"ошибка запроса"
 //	@Failure		500		object response		"ошибка сервера"
 //	@Router			/api/v1/task/{id} [get]
-func (h *Handler) CheckTask(f *fiber.Ctx) error {
+func (h *Handler) Check(f *fiber.Ctx) error {
 	id := f.Params("id") //NOTE: if api/v1/task endpoint is removed then this would enforce the id to be passed in the query
 	if id == "" {
 		log.Warn().Msgf(NoIdErrMsg)

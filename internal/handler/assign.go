@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// AssignTask godoc
+// Assign godoc
 // @Security BasicAuth
 //
 //	@Summary		Назначить задачу
@@ -21,7 +21,7 @@ import (
 //	@Failure		406		object response		"ошибка валидации"
 //	@Failure		500		object response		"ошибка сервера"
 //	@Router			/api/v1/task [post]
-func (h *Handler) AssignTask(f *fiber.Ctx) error {
+func (h *Handler) Assign(f *fiber.Ctx) error {
 	var items AssignTaskReq
 	err := f.BodyParser(&items)
 	if err != nil {
