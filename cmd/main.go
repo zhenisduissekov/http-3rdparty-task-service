@@ -1,8 +1,9 @@
 package main
 
 import (
-"os"
+	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
 	_ "github.com/zhenisduissekov/http-3rdparty-task-service/docs"
-		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/handler"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/handler"
 	zlog "github.com/zhenisduissekov/http-3rdparty-task-service/internal/logger"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"
@@ -52,7 +53,7 @@ func main() {
 	}()
 
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGSTOP)
 	<-quit
 
 	log.Info().Msg("Shutting down server...")
