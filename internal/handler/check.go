@@ -16,9 +16,9 @@ import (
 //
 // @Param id path string true "comment ID"
 //
-//	@Success		200		object response		"успешный ответ"
-//	@Failure		400		object response		"ошибка запроса"
-//	@Failure		500		object response		"ошибка сервера"
+//	@Success		200		{object} response		"успешный ответ"
+//	@Failure		400		{object} response		"ошибка запроса"
+//	@Failure		500		{object} response		"ошибка сервера"
 //	@Router			/api/v1/task/{id} [get]
 func (h *Handler) Check(f *fiber.Ctx) error {
 	id := f.Params("id") //NOTE: if api/v1/task endpoint is removed then this would enforce the id to be passed in the query

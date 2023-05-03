@@ -27,6 +27,7 @@ func (a *Task) converterToRepository(items entity.Task) {
 type Storage interface {
 	Set(key string, value entity.Task)
 	Get(key string) (entity.Task, error)
+	MakeRequest(items entity.Task) ([]byte, map[string]string, int, error)
 }
 
 type Repository struct {

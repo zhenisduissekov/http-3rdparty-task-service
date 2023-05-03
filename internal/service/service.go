@@ -1,11 +1,7 @@
 package service
 
 import (
-	"bytes"
-	"io"
-	"net/http"
-	"strings"
-	"time"
+					"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
@@ -50,7 +46,7 @@ func (s *NewService) CloseQueue() {
 
 func (s *NewService) processNextTask(items entity.Task) {
 	status := statusDone
-	body, headers, statusCode, err := s.makeRequest(items)
+	body, headers, statusCode, err := s.repository.MakeRequest(items)
 	if err != nil {
 		log.Error().Err(err).Msg(failedToMakeRequestErrMsg)
 		status = statusError
@@ -68,52 +64,4 @@ func (s *NewService) processNextTask(items entity.Task) {
 		Headers:        headers,
 	})
 }
-func (s *NewService) makeRequest(items entity.Task) ([]byte, map[string]string, int, error) {
-	req, err := prepReq(items)
-	if err != nil {
-		return nil, nil, http.StatusInternalServerError, err
-	}
 
-	resp, err := s.httpClient.Do(req)
-	if err != nil {
-		return nil, getRespHeaders(resp), 0, err
-	}
-	defer func() {
-		err := resp.Body.Close()
-		if err != nil {
-			log.Warn().Msg(failedToCloseRespBody)
-		}
-	}()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, getRespHeaders(resp), resp.StatusCode, err
-	}
-
-	return body, getRespHeaders(resp), resp.StatusCode, nil
-}
-
-func prepReq(items entity.Task) (*http.Request, error) {
-	req, err := http.NewRequest(items.Method, items.Url, bytes.NewBuffer([]byte(items.ReqBody)))
-	if err != nil {
-		return nil, err
-	}
-
-	for k, v := range items.Headers {
-		req.Header.Set(k, v)
-	}
-
-	return req, nil
-}
-
-func getRespHeaders(resp *http.Response) map[string]string {
-	if resp == nil {
-		return nil
-	}
-	headers := make(map[string]string)
-
-	for key, values := range resp.Header {
-		headers[key] = strings.Join(values, ",")
-	}
-	return headers
-}

@@ -19,7 +19,6 @@ const (
 	channelWasClosedMsg       = "channel was closed, exiting task queue"
 	tickMsg                   = "tick"
 	failedToMakeRequestErrMsg = "failed to make request"
-	failedToCloseRespBody     = "failed to close response body"
 )
 
 var queue = make(chan entity.Task, queueSize)
@@ -43,9 +42,6 @@ type NewService struct {
 func New(repository *repository.Repository, cnf *config.Conf) *Service {
 	return &Service{
 		Task: &NewService{
-			httpClient: &http.Client{
-				Timeout: cnf.Auth.RequestTimeout,
-			},
 			repository: repository,
 		},
 	}
