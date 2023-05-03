@@ -8,8 +8,8 @@ import (
 "testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+"github.com/zhenisduissekov/http-3rdparty-task-service/config"
+		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 )
 
 func TestRepoCache_Set(t *testing.T) {

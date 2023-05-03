@@ -1,6 +1,6 @@
 package repository
 import (
-"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
+"github.com/zhenisduissekov/http-3rdparty-task-service/config"
 "github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 )
 

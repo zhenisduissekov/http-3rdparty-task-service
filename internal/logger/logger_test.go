@@ -1,12 +1,12 @@
 package logger
 
 import (
-	"testing"
+"testing"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rzajac/zltest"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
 )
 
 // testing different levels of logging: error, debug, info, warn

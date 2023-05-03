@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+"os"
 	"os/signal"
 
 	"github.com/ansrivas/fiberprometheus/v2"
@@ -10,9 +10,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 	"github.com/rs/zerolog/log"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
 	_ "github.com/zhenisduissekov/http-3rdparty-task-service/docs"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/handler"
+		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/handler"
 	zlog "github.com/zhenisduissekov/http-3rdparty-task-service/internal/logger"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/service"

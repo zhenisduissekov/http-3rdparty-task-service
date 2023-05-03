@@ -2,15 +2,15 @@ package repository
 
 import (
 	"bytes"
-	"io"
+"io"
 	"net/http"
 	"strings"
 
 	"github.com/patrickmn/go-cache"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
+		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 )
 
 const (

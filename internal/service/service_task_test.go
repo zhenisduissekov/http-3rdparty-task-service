@@ -1,12 +1,12 @@
 package service
 
 import (
-	"net/http"
+"net/http"
 	"testing"
 	"time"
 
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
+		"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/repository"
 )
 

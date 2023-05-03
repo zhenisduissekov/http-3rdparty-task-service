@@ -2,11 +2,11 @@ package main
 
 import (
 	"bytes"
-	"io"
+"io"
 	"net/http"
 	"testing"
 
-	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/config"
+	"github.com/zhenisduissekov/http-3rdparty-task-service/config"
 )
 
 func Test_appHealth(t *testing.T) {
