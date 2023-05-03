@@ -35,16 +35,16 @@ func New() *Conf {
 	return &Conf{
 		ServiceName: "http_3rdparty_task_service",
 		Auth: AuthConf{
-			Username:       os.Getenv("USER_NAME_API"),
-			Password:       os.Getenv("PASSWORD_API"),
-			Port:           os.Getenv("PORT_API"),
+			Username:       getEnv("USER_NAME_API", "admin"),
+			Password:       getEnv("PASSWORD_API", "admin"),
+			Port:           getEnv("PORT_API", "3000"),
 			RequestTimeout: getEnvDuration("REQUEST_TIMEOUT", "10s"),
 		},
 		Cache: CacheConf{
 			DefaultExpiration: getEnvDuration("CACHE_DEFAULT_EXPIRATION", "60s"),
 			CleanupInterval:   getEnvDuration("CACHE_CLEANUP_INTERVAL", "120s"),
 		},
-		LogLevel: os.Getenv("LOG_LEVEL"),
+		LogLevel: getEnv("LOG_LEVEL", "info"),
 	}
 }
 
@@ -62,4 +62,12 @@ func getEnvDuration(key string, defaultValue string) time.Duration {
 		log.Err(err).Msg("error parsing duration")
 	}
 	return dur
+}
+
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultVal
 }

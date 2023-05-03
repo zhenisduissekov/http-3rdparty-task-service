@@ -84,7 +84,7 @@ func router(h *handler.Handler, conf *config.Conf) *fiber.App {
 		})
 	})
 
-	//app.Use(basicauth.New(basicauth.Config{ //todo: basic auth needs to be uncommented in production
+	//app.Use(basicauth.New(basicauth.Config{ //todo: uncomment for production
 	//	Users: map[string]string{
 	//		conf.Auth.Username: conf.Auth.Password,
 	//	},

@@ -11,13 +11,9 @@ its execution starts in the background.
 ### Instructions
 * run program
 ```
-    go run main.go
+    go run ./cmd/main.go
 ```
-if needed to specify port
-```
-    go run main.go --port :4000
-```
-if the project was more complicated, then I would use a Makefile to run the project and move main.go to ./cmd folder to run it like go run ./cmd/main.go
+
 
 * run tests
 ```
@@ -34,18 +30,16 @@ initializing swagger docs
 
 ```
 
-to run with docker-compose
+useful commands  with docker-compose to operate this service
 ```
     docker-compose up
-```
-
-to stop docker-compose
-```
+    docker-compose up --build
     docker-compose down
 ```
 
+
 ### Notes
-swag init -d ./cmd
+
 * grouped endpoints with `/api/v1` for future version control
 
 ### Used libraries
@@ -53,10 +47,10 @@ swag init -d ./cmd
 * I chose fiber v2 for its speed and easy implementation, also it has very good test implementation, if I needed to use as fewer dependencies as possible, then I would use net/http or chi.
 However, net/http would require me to write more code.
 
-* Zerolog is a very fast logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.
+* Zerolog is virtually th fastest logger, it is very easy to use and it has a lot of features. Even though is not updated anymore, it is still a very good logger, therefore does not require updates.
 
-* I used swag for swagger documentation, it is very easy to use and it has a lot of features.
+* fiber swagger uses swaggo/swag for swagger documentation, it is very easy and common to use, it has a lot of features and sources.
 
-* I used testify for testing, it is very easy to use and it has a lot of features.
+* testing and assert - common libs for testing.
 
-* I used go cache for caching, it is very easy to use and it has a lot of features, but also using repository makes it easy to replace my choice.
+* To keep data in memory I used go-cache for caching, it is very easy to use and it has a lot of features, but if replacement needed it is implemented in a way of fast replacement.

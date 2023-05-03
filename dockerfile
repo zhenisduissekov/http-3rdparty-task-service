@@ -6,6 +6,8 @@ COPY . .
 
 RUN go build -o app ./cmd
 
+RUN go test -v ./...
+
 EXPOSE 3000
 
 CMD ["./app"]

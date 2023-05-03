@@ -80,7 +80,7 @@ type CheckTaskResp struct {
 	Url            string            `json:"url" validate:"required" example:"http://google.com"`
 	Headers        map[string]string `json:"headers" validate:"omitempty" example:"\"Authentication\": \"Basic bG9naW46cGFzc3dvcmQ=\""`
 	ReqBody        []byte            `json:"body" validate:"omitempty" `
-	Status         string            `json:"status" validate:"omitempty" example:"in_process"` //todo: seperate to new structure
+	Status         string            `json:"status" validate:"omitempty" example:"in_process"`
 	HttpStatusCode int               `json:"http_status_code" validate:"omitempty"`
 	Length         int               `json:"length" validate:"omitempty"`
 }
