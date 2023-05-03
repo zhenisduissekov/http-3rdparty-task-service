@@ -5,15 +5,14 @@
 This is an HTTP server that makes requests to 3rd-party services.
 
 * The client sends a task to the service to perform as an http request to 3rd-party services.
-* The task is described in json format, the generated task id is returned in response and
-its execution starts in the background.
+* The task is described in json format, the generated task id is returned in response and its execution starts in the background.
+* The client must have a method that can be used to find out the status of the task.
 
-### Instructions
+## Instructions
 * run program
 ```
     go run ./cmd/main.go
 ```
-
 
 * run tests
 ```
@@ -37,12 +36,11 @@ useful commands  with docker-compose to operate this service
     docker-compose down
 ```
 
+## Notes
 
-### Notes
+*  endpoints are grouped with `/api/v1` for future version control
 
-* grouped endpoints with `/api/v1` for future version control
-
-### Used libraries
+## Used libraries
 
 * I chose fiber v2 for its speed and easy implementation, also it has very good test implementation, if I needed to use as fewer dependencies as possible, then I would use net/http or chi.
 However, net/http would require me to write more code.
