@@ -26,7 +26,7 @@ var queue = make(chan entity.Task, queueSize)
 
 type Service interface {
 	AssignTask(items entity.Task) (string, error)
-	TaskQueue() error
+	TaskQueue()
 	CloseChannel()
 	CheckTask(id string) (entity.Task, error)
 }
