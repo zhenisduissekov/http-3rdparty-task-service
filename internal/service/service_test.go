@@ -130,7 +130,7 @@ func TestNewService_CloseChannel(t *testing.T) {
 	cnf := config.New()
 	repo := repository.NewRepository(cnf)
 	srv := New(repo, cnf)
-	srv.CloseChannel()
+	srv.CloseQueue()
 	if val, ok := <-queue; ok {
 		t.Errorf("Channel is not closed: %v", val)
 	}
@@ -144,7 +144,7 @@ func TestNewService_AssignTask(t *testing.T) {
 	items := entity.Task{
 		Id: "test1",
 	}
-	id, err := srv.AssignTask(items)
+	id, err := srv.Assign(items)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -162,7 +162,7 @@ func TestTaskQueue(t *testing.T) {
 	repo := repository.NewRepository(cnf)
 	srv := New(repo, cnf)
 	go func() {
-		srv.TaskQueue()
+		srv.StartQueue()
 	}()
 	queue <- entity.Task{
 		Id:      "123",
@@ -175,7 +175,7 @@ func TestTaskQueue(t *testing.T) {
 		t.Errorf("queue still has items, want empty queue")
 	}
 	if len(queue) == 0 {
-		srv.CloseChannel()
+		srv.CloseQueue()
 	}
 	time.Sleep(100 * time.Millisecond)
 }

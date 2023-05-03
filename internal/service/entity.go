@@ -24,11 +24,15 @@ const (
 
 var queue = make(chan entity.Task, queueSize)
 
-type Service interface {
-	AssignTask(items entity.Task) (string, error)
-	TaskQueue()
-	CloseChannel()
-	CheckTask(id string) (entity.Task, error)
+type Task interface {
+	Assign(items entity.Task) (string, error)
+	StartQueue()
+	CloseQueue()
+	Check(id string) (entity.Task, error)
+}
+
+type Service struct {
+	Task
 }
 
 type NewService struct {
@@ -36,11 +40,13 @@ type NewService struct {
 	repository *repository.Repository
 }
 
-func New(repository *repository.Repository, cnf *config.Conf) *NewService {
-	return &NewService{
-		httpClient: &http.Client{
-			Timeout: cnf.Auth.RequestTimeout,
+func New(repository *repository.Repository, cnf *config.Conf) *Service {
+	return &Service{
+		Task: &NewService{
+			httpClient: &http.Client{
+				Timeout: cnf.Auth.RequestTimeout,
+			},
+			repository: repository,
 		},
-		repository: repository,
 	}
 }

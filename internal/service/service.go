@@ -11,14 +11,14 @@ import (
 	"github.com/zhenisduissekov/http-3rdparty-task-service/internal/entity"
 )
 
-func (s *NewService) AssignTask(items entity.Task) (string, error) {
+func (s *NewService) Assign(items entity.Task) (string, error) {
 	items.Status = statusNew
 	s.repository.Set(items.Id, items)
 	queue <- items
 	return items.Id, nil
 }
 
-func (s *NewService) TaskQueue() {
+func (s *NewService) StartQueue() {
 	ticker := time.NewTicker(tickPeriod)
 	defer ticker.Stop()
 
@@ -39,7 +39,7 @@ func (s *NewService) TaskQueue() {
 	return
 }
 
-func (s *NewService) CloseChannel() {
+func (s *NewService) CloseQueue() {
 	log.Warn().Msg("closing channel")
 	close(queue)
 }
@@ -114,6 +114,6 @@ func getRespHeaders(resp *http.Response) map[string]string {
 	return headers
 }
 
-func (s *NewService) CheckTask(id string) (entity.Task, error) {
+func (s *NewService) Check(id string) (entity.Task, error) {
 	return s.repository.Get(id)
 }

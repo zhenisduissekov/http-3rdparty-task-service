@@ -42,7 +42,7 @@ func main() {
 	app := router(h, cnf)
 
 	go func() {
-		srv.TaskQueue()
+		srv.Task.StartQueue()
 	}()
 
 	go func() {
@@ -56,7 +56,7 @@ func main() {
 	<-quit
 
 	log.Info().Msg("Shutting down server...")
-	srv.CloseChannel()
+	srv.Task.CloseQueue()
 	if err := app.Shutdown(); err != nil {
 		log.Fatal().Err(err).Msg("Server forced to shutdown")
 	}

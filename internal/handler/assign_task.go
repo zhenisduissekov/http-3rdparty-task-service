@@ -43,7 +43,7 @@ func (h *Handler) AssignTask(f *fiber.Ctx) error {
 		})
 	}
 
-	id, err := h.service.AssignTask(convItems)
+	id, err := h.service.Task.Assign(convItems)
 	if err != nil {
 		log.Err(err).Msgf(TaskAssignErrMsg)
 		return f.Status(fiber.StatusInternalServerError).JSON(&response{
